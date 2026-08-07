@@ -8,6 +8,8 @@ A consumer bread-proofing oven/box: an insulated enclosure with controlled heat,
 
 Firmware bring-up phase. Product spec (MVP) is drafted with locked/open/deferred sections. Display driver architecture is designed; FreeRTOS project setup and sensor/display task implementation are next.
 
+For a dated, granular log of how this was reached, see [CHANGELOG.md](./CHANGELOG.md).
+
 ## Done
 
 **Product spec (MVP-locked):**
@@ -23,12 +25,14 @@ Firmware bring-up phase. Product spec (MVP) is drafted with locked/open/deferred
 **Firmware / hardware architecture:**
 - MCU: STM32C031C6 (target), NUCLEO-L476RG (dev board)
 - Display: Kingbright CA56-12EWA common-anode 4-digit 7-segment LED
-- Display driver circuit designed — P-channel MOSFETs (AO3401A) for digit-select high-side switching, NPN transistors (MMBT3904) per segment to stay within GPIO sink current limits
+- Display driver circuit designed — P-channel MOSFETs (AO3401A) for digit-select high-side switching, NPN transistors (MMBT3904) per segment to stay within GPIO sink current limits — see [ADR 0002](./docs/adr/0002-npn-segment-drivers.md)
 - GPIO assignment finalized: PC0–PC7 (segments), PB0–PB3 (digit select)
 - 7-segment lookup table finalized (byte-per-digit encoding, 2 numeric digits + unit letter)
 - Display driver split into hardware-agnostic (`seg_driver.c/.h`) and board-specific (`seg_board.c/.h`) layers
-- RTOS selected: FreeRTOS via STM32CubeMX + CMSIS-RTOS v2
+- RTOS selected: FreeRTOS via STM32CubeMX + CMSIS-RTOS v2 — see [ADR 0001](./docs/adr/0001-freertos-over-bare-metal.md)
 - Task architecture defined: TIM6 ISR → mux task (real-time priority), sensor task (I2C poll every 2s), display manager task (queue + button notifications)
+
+Full schematics, BOM, and datasheets: [`/hardware`](./hardware). Full decision log: [`/docs/adr`](./docs/adr).
 
 ## In progress
 
