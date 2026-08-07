@@ -1,3 +1,23 @@
-build
-mx.scratch
-!.settings
+# STM32CubeIDE / Eclipse
+Debug/
+Release/
+*.launch
+.metadata/
+.settings/
+.cproject.bak
+
+# CubeMX generated build artifacts (keep generated source, ignore build output)
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
