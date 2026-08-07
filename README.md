@@ -1,8 +1,6 @@
 # Holding Cabinet — Consumer Bread Proofing Oven
 
-Embedded firmware and electronics for a consumer bread-proofing oven, developed as
-a portfolio project to demonstrate current, hands-on embedded systems skills
-(STM32, FreeRTOS, hardware bring-up, driver design).
+Embedded firmware and electronics for a consumer bread-proofing oven to compete with the Brod and Taylor consumer product of the same type. 
 
 ## Project Goal
 
@@ -13,7 +11,8 @@ firmware bring-up.
 
 ## Status
 
-🚧 Active development — see [CHANGELOG.md](./CHANGELOG.md) for latest progress.
+🚧 Active development — see [CHANGELOG.md](./CHANGELOG.md) for latest progress,
+or [ROADMAP.md](./ROADMAP.md) for what's next, deferred, and out of scope.
 
 ## Hardware Overview
 
@@ -30,13 +29,15 @@ See [`/hardware`](./hardware) for schematics, BOM, and datasheets.
 ## Firmware Architecture
 
 - **RTOS:** FreeRTOS via CMSIS-RTOS v2 (CubeMX Generate Code, driven via the
-  STM32Cube VS Code extension)
+  STM32Cube VS Code extension) — see [ADR 0001](./docs/adr/0001-freertos-over-bare-metal.md)
 - **Display driver:** Hardware-agnostic `seg_driver.c/.h` + board-specific `seg_board.c/.h`,
-  BSRR-based atomic GPIO writes for glitch-free multiplexing
+  BSRR-based atomic GPIO writes for glitch-free multiplexing; segment lines driven
+  through NPN transistors to stay under the MCU's I/O current limit — see
+  [ADR 0002](./docs/adr/0002-npn-segment-drivers.md)
 - **Tasks:** TIM6 ISR → binary semaphore → MuxTask (osPriorityRealtime); Sensor Task
   (2s I2C poll) → queue; Display Manager Task (queue + button notifications)
 
-See [`/docs/adr`](./docs/adr) for the reasoning behind key design decisions.
+See [`/docs/adr`](./docs/adr) for the full set of design decisions and their trade-offs.
 
 ## Repo Structure
 
@@ -52,11 +53,8 @@ CMakeLists.txt, .mxproject,    extension front-end). Left exactly as generated.
 /docs/adr/                     Architecture Decision Records — why, not just what
 /hardware/                     Schematics, BOM, datasheets
 CHANGELOG.md                   Dated progress log
+ROADMAP.md                     What's next, deferred, and out of scope
 ```
 
 ## Why This Project
-
-Built to demonstrate current, practical firmware engineering ability — schematic
-capture, driver design under real hardware constraints (GPIO current limits,
-display multiplexing, RTOS task/ISR interaction), and disciplined spec management
-for a cost-sensitive consumer product.
+TBD
