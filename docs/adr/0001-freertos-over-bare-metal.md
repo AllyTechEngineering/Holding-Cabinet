@@ -7,8 +7,12 @@
 
 The controller needs to handle several concurrent, timing-sensitive activities:
 multiplexed 7-segment display refresh (ISR-driven, must not visibly flicker or
-glitch), periodic I2C sensor reads, button input, and PWM fan control. As the
-product grows to include networking, more concurrent activity is expected.
+glitch), periodic I2C sensor reads, button input, and PWM fan control. 
+
+The product line is architected as a single PCBA and firmware project (multiple
+build configurations) spanning four consumer models — Model 3 and Model 4 add
+connectivity (companion iOS/Android app), which will introduce additional
+concurrent activity beyond the base task set.
 
 ## Decision
 

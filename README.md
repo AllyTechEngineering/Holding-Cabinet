@@ -9,6 +9,20 @@ competitive with Brod & Taylor's proofer line, at a cost-competitive price point
 for the US market. This repo tracks the alpha/pre-industrial-design stage through
 firmware bring-up.
 
+## Product Line
+
+This isn't a single-SKU project. One PCBA and one firmware project (multiple
+build configurations) are designed to serve four consumer models — enabled by
+the FreeRTOS task architecture's ability to add capability without a hardware
+or architecture redesign.
+
+| Model | Features | Housing / UI |
+|---|---|---|
+| 1 | Temperature control | Shared |
+| 2 | Temperature + humidity control | Shared |
+| 3 | Temperature + humidity control, connectivity, companion app (iOS/Android, Flutter) | Shared |
+| 4 (pro-consumer) | Same as Model 3 | Improved housing/insulation; UI TBD |
+
 ## Status
 
 🚧 Active development — see [CHANGELOG.md](./CHANGELOG.md) for latest progress,

@@ -2,7 +2,9 @@
 
 ## About this project
 
-A consumer bread-proofing oven/box: an insulated enclosure with controlled heat, airflow, and (in a future revision) humidity, aimed at home bakers as a lower-cost alternative to proofers like the Brod & Taylor line. Currently in alpha / pre-industrial-design — hardware topology and firmware architecture are being defined and validated before locking in a manufacturable design.
+Embedded firmware and electronics for a consumer bread-proofing oven (holding
+cabinet), being developed for commercial release. Built using current embedded
+systems practices (STM32, FreeRTOS, hardware bring-up, driver design).
 
 ## Status
 
@@ -11,6 +13,14 @@ Firmware bring-up phase. Product spec (MVP) is drafted with locked/open/deferred
 For a dated, granular log of how this was reached, see [CHANGELOG.md](./CHANGELOG.md).
 
 ## Done
+
+**Product line architecture (locked):**
+- Single PCBA + single firmware project (multiple build configurations) shared across all 4 consumer models
+- Model 1: temperature control only
+- Model 2: temperature + humidity control
+- Model 3: temperature + humidity control, connectivity, companion iOS/Android app (Flutter)
+- Model 4 (pro-consumer): same feature set as Model 3, improved housing/insulation
+- Models 1–3 share housing and UI
 
 **Product spec (MVP-locked):**
 - Radiant/conductive heating: silicone rubber heater pad on anodized aluminum base plate
@@ -60,6 +70,7 @@ These are intentionally unresolved until real enclosures/hardware can be tested:
 - Lid window material
 - Feet design
 - Graphic design / industrial design pass
+- Model 4 UI (pro-consumer variant)
 
 ## Explicitly out of scope (for now)
 
@@ -68,3 +79,10 @@ Not being designed for in this revision — noted here so scope doesn't creep:
 - Humidity control / ultrasonic humidifier
 - Wi-Fi / companion app
 - Dough rise indicator (potential IP considerations)
+
+## Why This Project
+Primary goal: bring a cost-competitive consumer proofing oven to market with a
+solid ROI. Applying disciplined engineering and project-management practices
+throughout — schematic capture, driver design under real hardware constraints
+(GPIO current limits, display multiplexing, RTOS task/ISR interaction), and
+rigorous spec management.
