@@ -417,6 +417,18 @@ static void MX_GPIO_Init(void)
   * @param  argument: Not used
   * @retval None
   */
+  void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN 5 */
+  for(;;)
+  {
+    HAL_GPIO_WritePin(IN1_GPIO_Port, IN1_Pin, GPIO_PIN_RESET);  // relay ON (active-low)
+    osDelay(2000);
+    HAL_GPIO_WritePin(IN1_GPIO_Port, IN1_Pin, GPIO_PIN_SET);    // relay OFF
+    osDelay(2000);
+  }
+  /* USER CODE END 5 */
+}
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
