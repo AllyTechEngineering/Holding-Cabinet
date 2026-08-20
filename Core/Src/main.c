@@ -417,7 +417,8 @@ static void MX_GPIO_Init(void)
   * @param  argument: Not used
   * @retval None
   */
-  void StartDefaultTask(void *argument)
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   for(;;)
@@ -426,17 +427,6 @@ static void MX_GPIO_Init(void)
     osDelay(2000);
     HAL_GPIO_WritePin(IN1_GPIO_Port, IN1_Pin, GPIO_PIN_SET);    // relay OFF
     osDelay(2000);
-  }
-  /* USER CODE END 5 */
-}
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
-{
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
   }
   /* USER CODE END 5 */
 }
@@ -454,7 +444,10 @@ void StartTask02(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_GPIO_WritePin(IN2_GPIO_Port, IN2_Pin, GPIO_PIN_RESET);  // relay ON (active-low)
+    osDelay(1000);
+    HAL_GPIO_WritePin(IN2_GPIO_Port, IN2_Pin, GPIO_PIN_SET);    // relay OFF
+    osDelay(1000);
   }
   /* USER CODE END StartTask02 */
 }
@@ -472,7 +465,10 @@ void StartTask03(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_GPIO_WritePin(IN3_GPIO_Port, IN3_Pin, GPIO_PIN_RESET);  // relay ON (active-low)
+    osDelay(2500);
+    HAL_GPIO_WritePin(IN3_GPIO_Port, IN3_Pin, GPIO_PIN_SET);    // relay OFF
+    osDelay(2500);
   }
   /* USER CODE END StartTask03 */
 }
@@ -490,7 +486,10 @@ void StartTask04(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_GPIO_WritePin(IN4_GPIO_Port, IN4_Pin, GPIO_PIN_RESET);  // relay ON (active-low)
+    osDelay(3000);
+    HAL_GPIO_WritePin(IN4_GPIO_Port, IN4_Pin, GPIO_PIN_SET);    // relay OFF
+    osDelay(3000);
   }
   /* USER CODE END StartTask04 */
 }
