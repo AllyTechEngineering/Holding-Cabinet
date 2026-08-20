@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file           : display_task.h
-  * @brief          : Header for display_task.c
+  * @file           : bme280_driver.c
+  * @brief          : BME280 air temperature/humidity sensor driver (I2C)
   ******************************************************************************
   * @attention
   *
@@ -10,18 +10,3 @@
   *
   ******************************************************************************
   */
-
-#ifndef __DISPLAY_TASK_H
-#define __DISPLAY_TASK_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* ... */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __DISPLAY_TASK_H */
