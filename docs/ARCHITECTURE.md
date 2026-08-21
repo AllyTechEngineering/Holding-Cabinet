@@ -1,102 +1,111 @@
+# Architecture — Holding Cabinet (Proofer)
+
+System-level view of the firmware and hardware architecture: how the
+system is built, not what it does (see PRD.md) or why specific decisions
+were made (see docs/adr/).
+
+---
+
 ## 1. System Overview
 
-The Holding Cabinet is a single-MCU embedded system built on a shared
-PCBA and firmware codebase, configured per product model at build time.
+Single-MCU embedded system on a shared PCBA and firmware codebase,
+configured per product model at build time.
 
 **Development platform:** NUCLEO-L476RG (STM32L476RG)
 **Production target:** STM32C031C6
 **RTOS:** FreeRTOS / CMSIS-RTOS v2
-**Companion Wi-Fi/BLE module:** ESP32-C6-MINI-1-N4
+**Companion Wi-Fi/BLE module (Models 3/4):** ESP32-C6-MINI-1-N4 (see ADR-0004)
 
-The MCU is the real-time control brain for all models. Models 3/4 add the
-ESP32-C6-MINI-1-N4 companion module (radio stack owned entirely by that
-module, communicating to the STM32 over UART — see ICD.md).
-
----
-
-## 2. Hardware Block Diagram (text-based)
-
-[STM32 block: Switches 1-4 → PB4-PB7; PC9 → Heater Relay (AC hot leg,
-high-side switch); I2C2 PB10/PB11 → BME280 (0x76) and PCF8574→LCD1602
-(0x27); Indicator LEDs → PA8-PA10; UART (TBD pins) → Wi-Fi/BLE Module
-(Models 3/4 only)]
+The STM32 is the real-time control brain for all models. The companion
+module owns the radio stack entirely, communicating to the STM32 over
+UART.
 
 ---
 
-## 3. Peripheral / Bus Summary
+## 2. Peripheral / Bus Summary
 
 | Peripheral | Interface | Pins | Notes |
 |---|---|---|---|
 | BME280 (temp/humidity) | I2C2 | PB10 (SCL) / PB11 (SDA) | Addr 0x76 |
-| LCD1602 (via PCF8574) | I2C2 | PB10 (SCL) / PB11 (SDA) | Addr 0x27, shared bus |
+| LCD1602 (via PCF8574) | I2C2 | PB10 (SCL) / PB11 (SDA) | Addr 0x27, shared bus, no conflict |
 | Switches 1–4 | GPIO | PB4–PB7 | SW1=Up, SW2=Down, SW3=Mode, SW4=TBD; PB4 remapped off NJTRST |
 | Indicator LEDs 1–3 | GPIO | PA8–PA10 | |
-| Heater relay | GPIO | PC9 | Low-side NPN drive (control side); AC contacts high-side on hot leg |
-| Wi-Fi/BLE module | UART | TBD | ESP32-C6-MINI-1-N4, module selected — pin assignment/baud/framing still TBD, see ICD.md |
+| Heater relay | GPIO | PC9 | NPN low-side switch, flyback diode, pull-down base resistor |
+| Wi-Fi/BLE module | UART | TBD | ESP32-C6-MINI-1-N4; pin assignment/baud/framing TBD |
 
-Full interface-level detail (register maps, protocols, framing) lives in
-ICD.md, not here.
+---
+
+## 3. Interfaces
+
+### 3.1 I2C2 Bus (Shared)
+STM32 as master. See docs/reference/LCD1602_I2C_Reference.md for PCF8574
+bit mapping and HD44780U init sequence.
+
+### 3.2 STM32 ↔ Wi-Fi/BLE Module (UART)
+**Status:** Module selected (ESP32-C6-MINI-1-N4, see ADR-0004). Pin
+assignment, baud rate, framing: TBD.
+
+| Command | Direction | Purpose | Frame/opcode |
+|---|---|---|---|
+| Reprovision Wi-Fi | STM32 → module | Triggered from Setup Menu (Section 4). Maps to `wifi_prov_mgr_reset_provisioning()` + re-entry into BLE advertising. | TBD |
+| Reprovision Wi-Fi (response) | Module → STM32 | Acknowledge/report result so LCD can reflect status. | TBD |
+
+### 3.3 BLE ↔ Companion App (Models 3/4)
+**Status:** TBD. Constraint: module's BLE stack used unmodified — no
+custom GATT service, no custom BLE application code (see RISK-001).
 
 ---
 
 ## 4. Setup Menu Entry
 
-Setup menu is entered by holding SW1 (Up) + SW2 (Down) simultaneously for
-3–5 seconds during power-on. Button state must be sampled early in boot
-(before normal UI task starts) to detect the combo.
+Entered by holding SW1 (Up) + SW2 (Down) for 3–5 seconds at power-on.
+Button state sampled early in boot, before normal UI task starts.
 
-Menu contents beyond Wi-Fi reprovisioning: TBD.
-
-First defined menu action: reprovision Wi-Fi — triggers
-`wifi_prov_mgr_reset_provisioning()` on the ESP32-C6-MINI-1-N4 (via UART
-command from STM32C031, see ICD.md Section 3) and re-enters BLE
-advertising for a new provisioning session.
+First defined action: **Reprovision Wi-Fi** — clears stored network
+credentials via `wifi_prov_mgr_reset_provisioning()`, device re-enters
+BLE advertising for a new provisioning session. Remaining menu structure: TBD.
 
 ---
 
 ## 5. Data Flow (Control Loop, High-Level)
 
-1. Sensing: BME280 read via I2C2 (temperature, humidity)
+1. Sensing: BME280 read via I2C2
 2. Control: compare sensed temperature against setpoint; drive heater
-   relay (PC9) accordingly — on/off or duty-cycled
+   relay (PC9) — on/off or duty-cycled
 3. Display: current status/setpoint written to LCD1602 via PCF8574
 4. Input: switch presses (PB4–PB7) update setpoint/mode. Exception: a
-   held Up+Down (SW1+SW2) combo for 3–5s at power-on diverts to the
-   Setup Menu (Section 4) instead of normal setpoint/mode handling.
-5. (Models 3/4) Connectivity: setpoint/status also exchanged with
-   companion app via BLE, through the Wi-Fi/BLE module over UART
+   held Up+Down combo for 3–5s at power-on diverts to the Setup Menu
+   (Section 4) instead.
+5. (Models 3/4) Connectivity: setpoint/status exchanged with companion
+   app via BLE, through the module over UART
 
-Exact task-to-task communication mechanism (queues, semaphores, shared
-state + mutex) is TBD — fill in once implemented/confirmed in firmware.
+Task-to-task communication mechanism (queues, semaphores, shared state +
+mutex): TBD.
+
 ---
 
 ## 6. FreeRTOS Task Architecture
 
-**Status: TBD — needs to be filled in from current firmware state.**
+**Status: TBD — fill in from current firmware state.**
 
 | Task | Priority | Responsibility | Status |
 |---|---|---|---|
-| (e.g., SensingTask) | TBD | Poll BME280 | TBD |
-| (e.g., ControlTask) | TBD | Heater relay control loop | TBD |
-| (e.g., DisplayTask) | TBD | LCD1602 update | TBD |
-| (e.g., ConnectivityTask) | TBD | UART comms w/ ESP32-C6-MINI-1-N4 (Models 3/4) | TBD |
-| (e.g., SetupMenuTask) | TBD | Button-combo detection, menu navigation | TBD |
+| SensingTask | TBD | Poll BME280 | TBD |
+| ControlTask | TBD | Heater relay control loop | TBD |
+| DisplayTask | TBD | LCD1602 update | TBD |
+| ConnectivityTask | TBD | UART comms w/ module (Models 3/4) | TBD |
+| SetupMenuTask | TBD | Button-combo detection, menu navigation | TBD |
 
-Note: the prior 7-segment display architecture used a dedicated
-osPriorityRealtime MuxTask driven by a TIM6 ISR (see ADR-0003). This was
-eliminated with the LCD1602 migration — display updates are now expected
-to run as a normal-priority periodic task rather than a real-time ISR-bound
-one. Confirm actual task list/priorities against current firmware source
-and fill in table above.
+---
 
 ## 7. Build Configuration Strategy
 
-Single firmware project, per-model build configs (Models 1–4), enabled by
-FreeRTOS extensibility.
+Single firmware project, per-model build configs, enabled by FreeRTOS
+extensibility.
 
 | Model | Config differences vs. base |
 |---|---|
-| 1 | Temp control only — humidity/connectivity tasks excluded |
+| 1 | Temp control only |
 | 2 | + Humidity control |
 | 3 | + Connectivity (Wi-Fi/BLE, Flutter app) |
 | 4 | Same as 3, pro-consumer housing — UI TBD |
@@ -105,5 +114,5 @@ FreeRTOS extensibility.
 
 ## 8. Revision Notes
 
-This is a living document. Sections marked TBD should be filled in as the
-firmware architecture solidifies — do not backfill speculatively.
+Living document. Sections marked TBD get filled in as the design
+solidifies — no speculative backfill.

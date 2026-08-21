@@ -1,7 +1,7 @@
 # Product Requirements Document — Holding Cabinet (Proofer)
 
 **Status:** Living document — iterated per Agile approach, not fully locked up front
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-21
 
 ## 1. Purpose
 
@@ -31,11 +31,9 @@ on improved housing/insulation and UI.
 - Radiant/conductive plate heating: AC silicone heater pad on anodized
   aluminum base plate — single pad, 200W @ 120VAC (300W TBD alternate,
   pending thermal testing). Sourced from high-volume consumer AC silicone
-  heater market (oil pan pre-heaters, 3D printer bed heaters). Pad does
-  not need to reach base plate edges — margin acceptable, uneven heat
-  distribution across plate is a don't-care. AC switching: relay/contactor
-  on hot (black) leg only; neutral/ground unswitched. UL certification
-  deferred — see COMPLIANCE.md.
+  heater market (oil pan pre-heaters, 3D printer bed heaters). AC switching:
+  relay/contactor on hot (black) leg only; neutral/ground unswitched. UL
+  certification deferred — see RISKS.md.
 - Interior cavity dimensions: 15" x 12" x 8"
 - Base plate mounting (prototype): rubber feet, ~0.75" standoff from
   countertop to underside of plate. Housing surrounds base plate, attaches
@@ -73,14 +71,13 @@ on improved housing/insulation and UI.
   Wi-Fi SSID/password to embedded system → device connects to home LAN
 - Architecture: companion Wi-Fi/BLE module owns the radio stack; STM32C031
   stays the real-time control brain and talks to the module over UART
-- Module: ESP32-C6-MINI-1-N4 (Wi-Fi 6 + BLE 5, FCC/CE pre-certified)
-- Module stack to be used unmodified (no custom BLE application code) —
-  see RISK-001 for why this matters
+- Module: ESP32-C6-MINI-1-N4 (see ADR-0004)
+- Module stack used unmodified — no custom BLE application code — see
+  RISK-001 for why this matters
 - App: Flutter (cross-platform iOS/Android)
-- CRUD support required for Wi-Fi provisioning: initial setup (Create),
-  connection status query (Read), change network (Update), forget
-  network / re-provision (Delete) — see ICD.md Section 3–4 for interface
-  detail
+- Wi-Fi credentials can be reprovisioned in the field via the physical
+  Setup Menu (see ARCHITECTURE.md Section 4) — no phone/app required to
+  clear and re-enter a new network
 
 ## 6. Setup Menu
 
@@ -89,10 +86,8 @@ holding SW1 (Up) + SW2 (Down) for 3–5 seconds at power-on. Provides local
 recovery path for scenarios where BLE/app access isn't available or
 practical (e.g. router replaced, no phone on hand).
 
-First defined menu action: **Reprovision Wi-Fi** — clears stored network
-credentials and returns the device to BLE advertising/provisioning mode.
-
-Remaining menu structure and additional menu items: TBD.
+First defined menu action: **Reprovision Wi-Fi**. Remaining menu structure
+and additional menu items: TBD.
 
 ## 7. Explicitly Out of Scope (future iterations)
 
