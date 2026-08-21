@@ -17,14 +17,15 @@ The firmware version is shared across all four product models (single
 PCBA/firmware codebase, per-model build configuration). Model identity is
 carried as build metadata, not a separate version number:
 
-
-All four models built from the same tagged commit share the same
-MAJOR.MINOR.PATCH; only the build metadata suffix differs.
-
+```
 1.2.0+model1
 1.2.0+model2
 1.2.0+model3
 1.2.0+model4
+```
+
+All four models built from the same tagged commit share the same
+MAJOR.MINOR.PATCH; only the build metadata suffix differs.
 
 ---
 
