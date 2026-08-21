@@ -47,7 +47,7 @@ stack unmodified" mitigation path for RISK-001.
   design needed on the module side for this feature.
 - STM32 ↔ module UART command set (ICD.md Section 3) now has a concrete
   target module to design pin assignment, baud rate, and framing against.
-- RISK-001's mitigation path is now tied to a specific implementation
+- The mitigation path is now tied to a specific implementation
   choice (stock provisioning manager only) rather than a general
   intention — any future feature requiring custom BLE application code
   would need re-evaluation against the SIG fee-tier question before

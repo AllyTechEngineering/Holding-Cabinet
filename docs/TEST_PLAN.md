@@ -110,7 +110,6 @@ strategy decision (see PRD Section 4)
   integration follows module vendor's grant conditions, see RISK-001)
 - Bluetooth SIG qualification tier confirmation (see RISK-001)
 - UL Recognized Component documentation check for heater/relay/power
-  supply (see COMPLIANCE.md)
 
 ---
 

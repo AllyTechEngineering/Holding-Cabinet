@@ -36,7 +36,6 @@ MAJOR.MINOR.PATCH; only the build metadata suffix differs.
 - Setup Menu spec: SW1+SW2 (Up+Down) held 3–5s at power-on enters menu;
   first defined action is Wi-Fi reprovisioning (see ARCHITECTURE.md
   Section 4, PRD.md Setup Menu section)
-- Reprovision Wi-Fi UART command + response stubbed in ICD.md Section 3
   (opcode/frame format still TBD)
 - RISK-004: Setup Menu false-trigger risk
 
