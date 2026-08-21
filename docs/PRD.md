@@ -73,16 +73,32 @@ on improved housing/insulation and UI.
   Wi-Fi SSID/password to embedded system → device connects to home LAN
 - Architecture: companion Wi-Fi/BLE module owns the radio stack; STM32C031
   stays the real-time control brain and talks to the module over UART
+- Module: ESP32-C6-MINI-1-N4 (Wi-Fi 6 + BLE 5, FCC/CE pre-certified)
 - Module stack to be used unmodified (no custom BLE application code) —
   see RISK-001 for why this matters
 - App: Flutter (cross-platform iOS/Android)
+- CRUD support required for Wi-Fi provisioning: initial setup (Create),
+  connection status query (Read), change network (Update), forget
+  network / re-provision (Delete) — see ICD.md Section 3–4 for interface
+  detail
 
-## 6. Explicitly Out of Scope (future iterations)
+## 6. Setup Menu
+
+Physical setup menu accessible without the companion app, entered by
+holding SW1 (Up) + SW2 (Down) for 3–5 seconds at power-on. Provides local
+recovery path for scenarios where BLE/app access isn't available or
+practical (e.g. router replaced, no phone on hand).
+
+First defined menu action: **Reprovision Wi-Fi** — clears stored network
+credentials and returns the device to BLE advertising/provisioning mode.
+
+Remaining menu structure and additional menu items: TBD.
+
+## 7. Explicitly Out of Scope (future iterations)
 
 - Ultrasonic humidifier
 - Dough rise indicator (potential IP considerations — flag before pursuing)
 
-## 7. Open Questions
+## 8. Open Questions
 
-- Wi-Fi/BLE module selection — narrowing in progress (see ADR once decided)
 - Model 4 full spec
