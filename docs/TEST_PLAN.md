@@ -62,6 +62,10 @@ temperature requirements within the 15" x 12" x 8" interior cavity.
 - Indicator LED behavior verification (PA8–PA10)
 - Mode Select button behavior (pending function definition — see PRD
   Section 4)
+- Setup Menu button-combo threshold (RISK-004): positive test — SW1+SW2
+  held 3–5s at power-on triggers Setup Menu; negative test — brief or
+  incidental press during normal power-on does not trigger it. Verify
+  against actual boot-time GPIO sampling timing once implemented.
 
 ---
 
@@ -74,11 +78,13 @@ strategy decision (see PRD Section 4)
 
 ## 6. Connectivity (Models 3/4)
 
-**Status:** 🔴 Not Started — deferred pending Wi-Fi/BLE module selection
+**Status:** 🔴 Not Started
 
 **Open items:**
-- BLE advertising and pairing verification
+- BLE advertising and pairing verification (ESP32-C6-MINI-1-N4)
 - Wi-Fi provisioning flow (SSID/password handoff, LAN connection)
+- Wi-Fi reprovisioning flow via Setup Menu (reset + re-advertise, see
+  ARCHITECTURE.md Section 4 and ICD.md Section 3)
 - STM32 ↔ module UART link reliability (see ICD.md)
 - App ↔ device data exchange verification
 
@@ -100,7 +106,9 @@ strategy decision (see PRD Section 4)
 **Status:** 🔴 Not Started
 
 **Open items:**
-- Pre-scan for FCC (once module selected)
+- FCC pre-scan (ESP32-C6-MINI-1-N4 is pre-certified — verify end-product
+  integration follows module vendor's grant conditions, see RISK-001)
+- Bluetooth SIG qualification tier confirmation (see RISK-001)
 - UL Recognized Component documentation check for heater/relay/power
   supply (see COMPLIANCE.md)
 
