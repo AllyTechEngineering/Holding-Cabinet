@@ -56,7 +56,7 @@ advertising for a new provisioning session.
 
 ## 5. Data Flow (Control Loop, High-Level)
 
-## 5. FreeRTOS Task Architecture
+## 6. FreeRTOS Task Architecture
 
 **Status: TBD — needs to be filled in from current firmware state.**
 
@@ -75,7 +75,7 @@ to run as a normal-priority periodic task rather than a real-time ISR-bound
 one. Confirm actual task list/priorities against current firmware source
 and fill in table above.
 
-## 6. Build Configuration Strategy
+## 7. Build Configuration Strategy
 
 Single firmware project, per-model build configs (Models 1–4), enabled by
 FreeRTOS extensibility.
@@ -89,7 +89,7 @@ FreeRTOS extensibility.
 
 ---
 
-## 7. Revision Notes
+## 8. Revision Notes
 
 This is a living document. Sections marked TBD should be filled in as the
 firmware architecture solidifies — do not backfill speculatively.
