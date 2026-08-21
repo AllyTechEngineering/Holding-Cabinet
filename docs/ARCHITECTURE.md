@@ -56,6 +56,20 @@ advertising for a new provisioning session.
 
 ## 5. Data Flow (Control Loop, High-Level)
 
+1. Sensing: BME280 read via I2C2 (temperature, humidity)
+2. Control: compare sensed temperature against setpoint; drive heater
+   relay (PC9) accordingly — on/off or duty-cycled
+3. Display: current status/setpoint written to LCD1602 via PCF8574
+4. Input: switch presses (PB4–PB7) update setpoint/mode. Exception: a
+   held Up+Down (SW1+SW2) combo for 3–5s at power-on diverts to the
+   Setup Menu (Section 4) instead of normal setpoint/mode handling.
+5. (Models 3/4) Connectivity: setpoint/status also exchanged with
+   companion app via BLE, through the Wi-Fi/BLE module over UART
+
+Exact task-to-task communication mechanism (queues, semaphores, shared
+state + mutex) is TBD — fill in once implemented/confirmed in firmware.
+---
+
 ## 6. FreeRTOS Task Architecture
 
 **Status: TBD — needs to be filled in from current firmware state.**
