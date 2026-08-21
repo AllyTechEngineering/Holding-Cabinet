@@ -29,10 +29,26 @@ Bit mapping: P0=RS, P1=R/W, P2=EN, P3=BL, P4–P7=DB4–DB7.
 
 ## 3. STM32 ↔ Wi-Fi/BLE Module (UART)
 
-**Status: TBD — pending module selection.** (now resolved: ESP32-C6-MINI-1-N4)
+**Status: Module selected (ESP32-C6-MINI-1-N4). Interface details TBD.**
 
-Open items: UART pin assignment, baud rate/framing, message framing
-protocol, command/response set, error/timeout handling — all TBD.
+Companion Wi-Fi/BLE module owns the radio stack; STM32C031 remains the
+real-time control brain and communicates over UART.
+
+**Open items:**
+- UART pin assignment (TBD)
+- Baud rate / framing (TBD)
+- Message framing protocol (TBD — e.g., length-prefixed, delimiter-based, or vendor AT-command set)
+- Error/timeout handling strategy (TBD)
+
+**Command/response set (partial — commands identified so far):**
+
+| Command | Direction | Purpose | Frame/opcode |
+|---|---|---|---|
+| Reprovision Wi-Fi | STM32C031 → module | Triggered from Setup Menu (see ARCHITECTURE.md Section 4). Maps to `wifi_prov_mgr_reset_provisioning()` + re-entry into BLE advertising. | TBD |
+
+Additional commands (status query, connection state reporting to drive
+LCD updates, etc.) to be added as they're identified — this table is not
+expected to be complete until firmware implementation.
 
 ---
 
